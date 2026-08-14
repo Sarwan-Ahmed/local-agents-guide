@@ -1,0 +1,12 @@
+openai==1.*
+pydantic==2.*
+python-dotenv==1.0.*
+numpy
+langchain==0.3.*
+langgraph==0.2.*
+langchain-openai==0.2.*
+langchain-chroma==0.1.*
+langchain-community==0.3.*
+langchain-text-splitters==0.3.*
+chromadb==0.5.*
+posthog<3
