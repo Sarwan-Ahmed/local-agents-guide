@@ -1,24 +1,52 @@
 # 08 — Evaluation & cost comparison
 
-🚧 **Outline only — full write-up and code coming in a future pass.**
+Goal: measure whether an agent is actually working (not just "it ran without crashing"), and put real numbers behind the local-vs-cloud tradeoff from [module 00](../00-fundamentals/).
 
-## What you'll learn
+## Why "it gave a reasonable-looking answer" isn't evaluation
 
-How to measure whether an agent is actually working well (not just "it ran without crashing"), and put real numbers behind the local-vs-cloud tradeoff introduced back in [module 00](../00-fundamentals/).
+Module 03 and 04 both showed the same failure mode: an agent can call the right tool, get the right result, and still produce a final answer that doesn't faithfully reflect it. A fluent, confident-sounding answer is not the same as a correct one — you need a check that doesn't rely on skimming the output yourself.
 
-## Planned outline
+## A minimal automatic check
 
-- Why "it gave a reasonable-looking answer" isn't evaluation: building a small test set of question/expected-answer pairs for the flagship project's sample docs
-- Simple automatic checks: did the answer mention the expected fact, did it cite a source, did it hallucinate a source that doesn't exist
-- Using a second, larger model as a judge for less clear-cut answers, and the caveats of doing that
-- Timing local inference: measuring tokens/second on your hardware for the default model, so "small model on a laptop" has a concrete number attached
-- The cost comparison, with real figures: running the flagship project's test set N times locally (electricity cost, effectively $0) vs. estimated cost if the same requests hit a cloud API at current per-token pricing — closing the loop opened in module 00
-- Where local stops being the right call: when you need a capability the small local model genuinely doesn't have (a real production workload, much larger context, etc.)
+[`eval.py`](eval.py) runs a small test set of questions against the flagship project's agent — the same questions from `projects/chat-with-your-docs`'s sample docs — and checks whether each answer contains the expected fact (a substring check, e.g. does the vacation-days answer actually contain "18"). This is deliberately simple: it's not asking a second model to judge quality, just verifying the concrete fact made it into the answer.
+
+This catches exactly the failure mode module 03 demonstrated: if the agent's prose hallucinates instead of using the real retrieved/tool content, the expected substring won't be there and the check fails, even though the answer might *read* fine.
+
+## Timing and token usage
+
+The same script records wall-clock time per question and, where the model reports it, token usage per question — giving you real numbers for "how slow/expensive is this" instead of a vague impression.
+
+## Setup
+
+Needs the flagship project ingested first (same as module 07):
+
+```bash
+cd projects/chat-with-your-docs
+source .venv/bin/activate && python ingest.py   # skip if already done
+```
+
+Then, from `modules/`:
+
+```bash
+cd modules
+source .venv/bin/activate
+python 08-evaluation-and-cost-comparison/eval.py
+```
+
+Expected output: a per-question pass/fail table, timing, total tokens used, and a cost comparison against illustrative cloud API pricing — closing the loop opened in module 00 with actual numbers from your own hardware.
+
+## Reading the cost comparison honestly
+
+The cloud pricing figures in `eval.py` are hardcoded, illustrative, and will drift out of date — the point isn't the exact dollar figure, it's the shape of the result: your local run costs electricity only, regardless of how many times you re-run it, while the cloud estimate scales linearly with every single request. Re-run `eval.py` a few times in a row and watch the local cost line stay at $0 while a hypothetical cloud bill would keep climbing.
+
+## Where local stops being the right call
+
+None of this means "always run local." Local wins while you're iterating and learning, where request volume is high and correctness bars are forgiving. It stops being the right call once you need a capability the local model genuinely lacks — much larger context windows, stronger reasoning on hard tasks, or production reliability/uptime guarantees a laptop can't offer.
 
 ## Prerequisite
 
-[Module 06 — RAG](../06-rag/) — this module evaluates the flagship project built there
+[Module 06 — RAG](../06-rag/) — this module evaluates the project built there
 
 ## Next
 
-You've reached the end of the current curriculum — see the root [README](../../README.md) for repo status and what's planned next.
+You've reached the end of the current curriculum — see the root [README](../../README.md) for repo status.
