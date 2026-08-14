@@ -16,21 +16,23 @@ If you want to see the whole point of this repo working in 15 minutes before rea
 
 Then come back and work through the modules in order — each one explains a concept the flagship project already used.
 
+**This is the `reference-solutions` branch** — every module below has a full write-up and working code. If you want to attempt modules 02-08 yourself as exercises before seeing how they're solved, switch to `main`, which has the same structure with those modules left as outlines only.
+
 ## Learning path
 
-| # | Module | Status | What it covers |
-|---|--------|--------|-----------------|
-| 00 | [Fundamentals](modules/00-fundamentals/) | ✅ Ready | Tokens, context windows, why local inference has no per-token cost |
-| 01 | [Running models locally](modules/01-running-models-locally/) | ✅ Ready | Installing Ollama, pulling a model, talking to it over HTTP |
-| 02 | [Prompting & structured output](modules/02-prompting-and-structured-output/) | 🚧 Outline | Getting reliable, parseable answers out of a small model |
-| 03 | [Tool use / function calling](modules/03-tool-use-function-calling/) | 🚧 Outline | How a model "calls" a function — the mechanic behind agent skills |
-| 04 | [Agents](modules/04-agents/) | 🚧 Outline | Looping a model + tools together (LangGraph) |
-| 05 | [Vector databases & embeddings](modules/05-vector-databases-and-embeddings/) | 🚧 Outline | What an embedding is, what a vector DB stores |
-| 06 | [RAG](modules/06-rag/) | 🚧 Outline | Wiring retrieval into the agent loop from module 04 |
-| 07 | [Multi-agent orchestration](modules/07-multi-agent-orchestration/) | 🚧 Outline (advanced) | Multiple agents cooperating |
-| 08 | [Evaluation & cost comparison](modules/08-evaluation-and-cost-comparison/) | 🚧 Outline | Measuring local vs. cloud cost/latency/quality with real numbers |
+| # | Module | What it covers |
+|---|--------|-----------------|
+| 00 | [Fundamentals](modules/00-fundamentals/) | Tokens, context windows, why local inference has no per-token cost |
+| 01 | [Running models locally](modules/01-running-models-locally/) | Installing Ollama, pulling a model, talking to it over HTTP |
+| 02 | [Prompting & structured output](modules/02-prompting-and-structured-output/) | Getting reliable, parseable answers out of a small model |
+| 03 | [Tool use / function calling](modules/03-tool-use-function-calling/) | How a model "calls" a function — the mechanic behind agent skills |
+| 04 | [Agents](modules/04-agents/) | Looping a model + tools together (LangGraph) |
+| 05 | [Vector databases & embeddings](modules/05-vector-databases-and-embeddings/) | What an embedding is, what a vector DB stores |
+| 06 | [RAG](modules/06-rag/) | Wiring retrieval into the agent loop from module 04 |
+| 07 | [Multi-agent orchestration](modules/07-multi-agent-orchestration/) (advanced) | Multiple agents cooperating |
+| 08 | [Evaluation & cost comparison](modules/08-evaluation-and-cost-comparison/) | Measuring local vs. cloud cost/latency/quality with real numbers |
 
-Modules marked ✅ have full explanations and runnable steps today. Modules marked 🚧 have a scoped outline of what's coming so you know what to expect next — they are not yet complete, and this table will be updated as they land.
+Modules 02-08 share one virtual environment — see [modules/README.md](modules/README.md) for setup.
 
 ## Repo layout
 
@@ -53,4 +55,4 @@ resources.md  curated external links, grouped by topic
 
 ## Contributing
 
-This guide is a work in progress (see the 🚧 modules above). Issues and PRs that fill in a module, fix an inaccuracy, or add a clearer example are welcome once this repo is public.
+Issues and PRs that fix an inaccuracy, improve an example, or extend a module are welcome.
