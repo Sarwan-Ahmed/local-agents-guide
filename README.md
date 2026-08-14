@@ -16,6 +16,8 @@ If you want to see the whole point of this repo working in 15 minutes before rea
 
 Then come back and work through the modules in order — each one explains a concept the flagship project already used.
 
+**Modules 02-08 below are outlines, meant as assignments** — try building each one yourself from its outline. Stuck, or want to check your work? The [`reference-solutions`](https://github.com/Sarwan-Ahmed/local-agents-guide/tree/reference-solutions) branch has a full write-up and working code for every module.
+
 ## Learning path
 
 | # | Module | Status | What it covers |
