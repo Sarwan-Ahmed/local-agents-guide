@@ -1,7 +1,7 @@
-"""Loads sample_docs/*.md, chunks them, embeds them locally, and persists to a Chroma store.
+"""Loads input_docs/*.txt, chunks them, embeds them locally, and persists to a Chroma store.
 
 Run once before main.py: `python ingest.py`
-Re-run any time you change the contents of sample_docs/ (or point DOCS_DIR at your own folder).
+Re-run any time you change the contents of input_docs/ (or point INPUT_DIR at your own folder).
 """
 
 import os
@@ -17,20 +17,21 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 load_dotenv()
 
-DOCS_DIR = Path(__file__).parent / "sample_docs"
+INPUT_DIR = Path(os.environ.get("INPUT_DIR", "input_docs"))
+INPUT_GLOB = os.environ.get("INPUT_GLOB", "*.txt")
 PERSIST_DIR = Path(__file__).parent / "chroma_db"
 
 
 def load_documents():
     docs = []
-    for path in sorted(DOCS_DIR.glob("*.md")):
+    for path in sorted(INPUT_DIR.glob(INPUT_GLOB)):
         docs.extend(TextLoader(str(path)).load())
     return docs
 
 
 def main():
     documents = load_documents()
-    print(f"Loaded {len(documents)} document(s) from {DOCS_DIR}")
+    print(f"Loaded {len(documents)} document(s) from {INPUT_DIR}")
 
     splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
     chunks = splitter.split_documents(documents)

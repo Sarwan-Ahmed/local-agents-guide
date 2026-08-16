@@ -1,0 +1,7 @@
+Customer intake form.
+Name: Priya Kapoor
+Date of birth: 1988-11-04
+Account #: ACC-40521
+Email: priya.kapoor@example-mail.com
+Phone: (555) 233-9081
+Notes: prefers email contact.

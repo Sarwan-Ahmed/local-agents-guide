@@ -1,0 +1,6 @@
+Customer intake form.
+Name: Omar Haddad
+Date of birth: 1995-06-30
+Account #: ACC-63310
+Email: omar.haddad@example-mail.com
+Phone: (555) 771-2209

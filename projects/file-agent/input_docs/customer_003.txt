@@ -1,0 +1,4 @@
+New customer: Grace Lindqvist.
+Account number ACC-19234.
+Phone: 555-402-8871.
+Email on file: grace.l@example-mail.com.

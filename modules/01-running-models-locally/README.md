@@ -52,7 +52,7 @@ You should get back a JSON response containing the model's reply, plus a `usage`
 
 ## 5. Pull the embedding model too
 
-The flagship RAG project ([projects/chat-with-your-docs](../../projects/chat-with-your-docs/)) needs one more model, used only to turn text into vectors (not for chatting):
+The flagship project ([projects/file-agent](../../projects/file-agent/)) needs one more model, used only to turn text into vectors (not for chatting):
 
 ```bash
 ollama pull nomic-embed-text
@@ -66,7 +66,7 @@ You should now have:
 - [ ] `nomic-embed-text` pulled
 - [ ] The `curl` command above returning a JSON response
 
-If all four are true, go build the flagship project: [projects/chat-with-your-docs →](../../projects/chat-with-your-docs/)
+If all four are true, go build the flagship project: [projects/file-agent →](../../projects/file-agent/)
 
 ## Next
 
