@@ -8,7 +8,26 @@ This generalizes [module 02](../../modules/02-prompting-and-structured-output/)'
 
 Three short, clearly-fictional customer records in different formats (a form, a call note, a terse note missing a field) — enough to see the extraction handle messy real-world formatting and a genuinely missing field. Once it works, point `INPUT_DIR` at your own folder instead (see "Using this on real data" below).
 
-## Setup
+## Run with Docker (recommended — no local Python or Ollama install needed)
+
+Needs only Docker Desktop (or Docker Engine + Compose) installed.
+
+```bash
+cd projects/batch-field-extraction
+docker compose up -d ollama                   # starts a local Ollama server in a container
+docker compose exec ollama ollama pull llama3.2:3b   # one-time, cached in a Docker volume
+docker compose run --rm --build app           # runs the extraction
+```
+
+`input_docs/` and `output/` are mounted straight from this folder into the container, so `output/extracted.csv` lands on your normal filesystem exactly like running it without Docker. Re-run `docker compose run --rm --build app` any time you add files or change `schema.py` — `--build` picks up code/schema changes without you needing to remember a separate build step.
+
+To run it against your own real files instead of the mocked samples, without ever copying them into this repo, point the `./input_docs` line in `docker-compose.yml`'s `volumes:` at your real folder's absolute path, or override it on the command line for a one-off run:
+
+```bash
+docker compose run --rm --build -v /Users/you/private/customer-files:/app/input_docs app
+```
+
+## Run without Docker
 
 ```bash
 cd projects/batch-field-extraction
@@ -20,13 +39,13 @@ cp .env.example .env
 
 Needs [module 01](../../modules/01-running-models-locally/) done: Ollama running, `llama3.2:3b` pulled.
 
-## Run it
-
 ```bash
 python extract_batch.py
 ```
 
-Expected output: an `OK`/`FAIL` line per file, then a summary, then `output/extracted.csv` with one row per file — `full_name`, `date_of_birth`, `account_number`, `email`, `phone`, plus which source file each row came from. `record_003.txt` is missing a phone number on purpose — check that its row has `phone` as empty rather than a made-up value.
+## Expected output
+
+An `OK`/`FAIL` line per file, then a summary, then `output/extracted.csv` with one row per file — `full_name`, `date_of_birth`, `account_number`, `email`, `phone`, plus which source file each row came from. `record_003.txt` is missing a phone number on purpose — check that its row has `phone` as empty rather than a made-up value.
 
 ## Adapting this to your own fields
 
@@ -55,7 +74,7 @@ The agent will update the schema, generate its own fake test files, run `extract
 
 A few things worth doing before pointing this at actual customer files:
 
-- **Keep real input files outside this git repo entirely.** Point `INPUT_DIR` in `.env` at an absolute path elsewhere on disk (e.g. `INPUT_DIR=/Users/you/private/customer-files`), rather than copying real files into `input_docs/`. `output/` is already gitignored, but don't rely on that alone — real PII shouldn't be created inside a folder that's ever been (or could accidentally be) pushed to a public remote.
+- **Keep real input files outside this git repo entirely.** Without Docker: point `INPUT_DIR` in `.env` at an absolute path elsewhere on disk (e.g. `INPUT_DIR=/Users/you/private/customer-files`). With Docker: mount your real folder in as a volume instead of copying files in, as shown above. Either way, don't copy real files into `input_docs/`. `output/` is already gitignored, but don't rely on that alone — real PII shouldn't be created inside a folder that's ever been (or could accidentally be) pushed to a public remote.
 - **Check with your organization's data handling process first**, even though this runs entirely locally. Running a model on your own machine solves the *vendor data-retention* problem (nothing is sent to a hosted AI provider), but it doesn't automatically satisfy every other requirement your organization or a specific client engagement may have for handling customer PII — data residency, encryption at rest, access logging, which devices are approved for this kind of data. Confirm with your security/compliance process before running this on real customer records, not just because the model happens to be local.
 - **Spot-check the output.** Module 03 and 08 both cover this: small local models don't always extract perfectly. Skim a sample of `output/extracted.csv` against the source files before trusting the full batch, especially for a schema change you haven't tested yet.
 

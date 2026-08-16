@@ -70,12 +70,27 @@ you handled it.
 
 ## Verify before handing back
 
-Run `python extract_batch.py` (the venv is at `.venv/` in this project folder; the
-user needs Ollama already running per the project README) against your new mock
-files. Check the output CSV: every field you expected should be there, and any
-field you intentionally left out of a mock file should come back empty, not
-invented. If something's wrong, fix `schema.py` or the prompt logic and re-run
-until it's clean -- don't hand back a broken or unverified script.
+Run the pipeline against your new mock files and check the output CSV: every field
+you expected should be there, and any field you intentionally left out of a mock
+file should come back empty, not invented. If something's wrong, fix `schema.py` or
+the prompt logic and re-run until it's clean -- don't hand back a broken or
+unverified script.
+
+Prefer Docker if it's available (check with `docker info` or just try the command
+below) since it needs no local Python setup:
+
+```bash
+docker compose up -d ollama
+docker compose exec ollama ollama pull llama3.2:3b
+docker compose run --rm --build app
+```
+
+If Docker isn't available, fall back to the local venv at `.venv/` in this project
+folder (the user needs Ollama already running per the project README):
+
+```bash
+source .venv/bin/activate && python extract_batch.py
+```
 
 ## Handing back
 
