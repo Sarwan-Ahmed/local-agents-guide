@@ -23,7 +23,7 @@ python 04-agents/graph_agent.py
 
 ## `shortcut_agent.py` — the one-liner version
 
-Once the manual graph makes sense, `langgraph.prebuilt.create_react_agent` builds the same kind of graph for you in one call. [`shortcut_agent.py`](shortcut_agent.py) does the identical task using that shortcut — this is the pattern the flagship project (`projects/chat-with-your-docs`) and later modules actually use day to day.
+Once the manual graph makes sense, `langgraph.prebuilt.create_react_agent` builds the same kind of graph for you in one call. [`shortcut_agent.py`](shortcut_agent.py) does the identical task using that shortcut — this is the pattern the flagship project (`projects/file-agent`) and later modules actually use day to day.
 
 ```bash
 python 04-agents/shortcut_agent.py

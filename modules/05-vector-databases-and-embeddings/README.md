@@ -37,7 +37,7 @@ Real documents are longer than one sentence, so they get split into smaller **ch
 - **Chunk size** — how much text per chunk. Too large: retrieval becomes vague. Too small: a chunk may lose context it needs.
 - **Chunk overlap** — how much adjacent chunks share, so a sentence that spans a chunk boundary isn't lost from both sides.
 
-The flagship project's `ingest.py` (`projects/chat-with-your-docs/ingest.py`) uses `chunk_size=500, chunk_overlap=50` — module 06 explains that choice in context.
+The flagship project's `ingest.py` (`projects/file-agent/ingest.py`) uses `chunk_size=500, chunk_overlap=50` — module 06 explains that choice in context.
 
 ## Alternatives to Chroma, briefly
 

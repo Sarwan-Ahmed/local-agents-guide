@@ -1,6 +1,6 @@
 # Modules 02-08 — setup
 
-Modules 00 and 01 need no Python. From module 02 onward, each module has a small runnable script, and they all share one virtual environment (separate from the flagship project's own venv in `projects/chat-with-your-docs/`).
+Modules 00 and 01 need no Python. From module 02 onward, each module has a small runnable script, and they all share one virtual environment (separate from the flagship project's own venv in `projects/file-agent/`).
 
 ```bash
 cd modules
