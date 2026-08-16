@@ -8,9 +8,9 @@ Module 03 and 04 both showed the same failure mode: an agent can call the right 
 
 ## A minimal automatic check
 
-[`eval.py`](eval.py) runs a small test set of questions against the flagship project's agent — the same questions from `projects/chat-with-your-docs`'s sample docs — and checks whether each answer contains the expected fact (a substring check, e.g. does the vacation-days answer actually contain "18"). This is deliberately simple: it's not asking a second model to judge quality, just verifying the concrete fact made it into the answer.
+[`eval.py`](eval.py) runs a small test set of questions against the flagship project's agent — the same customer records from `projects/file-agent`'s `input_docs/` — and checks whether each answer contains the expected fact (a substring check, e.g. does the answer actually contain the right account number). This is deliberately simple: it's not asking a second model to judge quality, just verifying the concrete fact made it into the answer.
 
-This catches exactly the failure mode module 03 demonstrated: if the agent's prose hallucinates instead of using the real retrieved/tool content, the expected substring won't be there and the check fails, even though the answer might *read* fine.
+This catches exactly the failure mode module 03 demonstrated: if the agent's prose hallucinates instead of using the real retrieved/tool content, the expected substring won't be there and the check fails, even though the answer might *read* fine. It also caught a variant of module 07's refusal quirk: `eval.py`'s agent originally had no system prompt, and `llama3.2:3b` refused the very first question outright even with the correct answer already retrieved — giving a hard `FAIL` rather than a subtle wrong answer. Fixed the same way module 07 did: a system prompt matching `projects/file-agent/agent.py`'s proven structure, no privacy disclaimers.
 
 ## Timing and token usage
 
@@ -21,7 +21,7 @@ The same script records wall-clock time per question and, where the model report
 Needs the flagship project ingested first (same as module 07):
 
 ```bash
-cd projects/chat-with-your-docs
+cd projects/file-agent
 source .venv/bin/activate && python ingest.py   # skip if already done
 ```
 

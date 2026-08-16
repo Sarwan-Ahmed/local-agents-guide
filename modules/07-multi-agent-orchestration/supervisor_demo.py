@@ -1,7 +1,7 @@
 """A router decides, per question, whether to send it to a docs specialist or a
 chitchat specialist. Reuses the flagship project's ingested Chroma index.
 
-Run ingest.py in projects/chat-with-your-docs first if you haven't already.
+Run ingest.py in projects/file-agent first if you haven't already.
 Run: python 07-multi-agent-orchestration/supervisor_demo.py
 """
 
@@ -15,6 +15,7 @@ os.environ.setdefault("ANONYMIZED_TELEMETRY", "False")
 from dotenv import load_dotenv
 from langchain.tools.retriever import create_retriever_tool
 from langchain_chroma import Chroma
+from langchain_core.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langgraph.prebuilt import create_react_agent
 from openai import OpenAI
@@ -22,7 +23,7 @@ from pydantic import BaseModel
 
 load_dotenv()
 
-FLAGSHIP_DIR = Path(__file__).parent.parent.parent / "projects" / "chat-with-your-docs"
+FLAGSHIP_DIR = Path(__file__).parent.parent.parent / "projects" / "file-agent"
 CHROMA_DIR = FLAGSHIP_DIR / "chroma_db"
 
 
@@ -45,8 +46,8 @@ def build_router():
                     "role": "system",
                     "content": (
                         'Classify the question as {"route": "docs"} if it could be about '
-                        'a company handbook, product FAQ, or team directory, otherwise '
-                        '{"route": "chitchat"}. Reply with only that JSON.'
+                        'one of the customer records (names, account numbers, contact '
+                        'details), otherwise {"route": "chitchat"}. Reply with only that JSON.'
                     ),
                 },
                 {"role": "user", "content": question},
@@ -73,8 +74,19 @@ def build_docs_agent(llm):
         store.as_retriever(search_kwargs={"k": 3}),
         name="search_docs",
         description="Search the ingested documents for relevant passages.",
+        # Labeling each chunk's source is what makes multi-record lookups reliable --
+        # see module 06's write-up of the exact failure this fixes.
+        document_prompt=PromptTemplate.from_template("Source: {source}\n{page_content}"),
     )
-    return create_react_agent(llm, tools=[retriever_tool])
+    docs_prompt = (
+        "You help the user work with a folder of their own documents.\n\n"
+        "Use search_docs when they ask a question but you don't know which file has "
+        "the answer.\n\n"
+        "A tool's result is ground truth. If search_docs returns an answer to the "
+        "question, use that exact information in your reply -- never say you don't "
+        "have the information after a tool already gave it to you."
+    )
+    return create_react_agent(llm, tools=[retriever_tool], prompt=docs_prompt)
 
 
 def answer(question: str, route_fn, docs_agent, chitchat_llm) -> tuple[str, str]:
@@ -97,7 +109,7 @@ def main():
     docs_agent = build_docs_agent(llm)
 
     for question in [
-        "How many vacation days do employees get?",
+        "What is Priya Kapoor's account number?",
         "What's a fun fact about octopuses?",
     ]:
         picked, response = answer(question, route_fn, docs_agent, llm)
