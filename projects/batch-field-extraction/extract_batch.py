@@ -19,6 +19,7 @@ from schema import CustomerRecord
 load_dotenv()
 
 INPUT_DIR = Path(os.environ.get("INPUT_DIR", "input_docs"))
+INPUT_GLOB = os.environ.get("INPUT_GLOB", "*.txt")
 OUTPUT_FILE = Path(os.environ.get("OUTPUT_FILE", "output/extracted.csv"))
 
 FIELD_TEMPLATE = json.dumps({name: "<value or null>" for name in CustomerRecord.model_fields}, indent=2)
@@ -63,9 +64,9 @@ def main():
     )
     model = os.environ.get("LLM_MODEL", "llama3.2:3b")
 
-    files = sorted(INPUT_DIR.glob("*.txt"))
+    files = sorted(INPUT_DIR.glob(INPUT_GLOB))
     if not files:
-        print(f"No .txt files found in {INPUT_DIR}")
+        print(f"No files matching {INPUT_GLOB} found in {INPUT_DIR}")
         return
 
     rows = []
