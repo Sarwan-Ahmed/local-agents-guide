@@ -10,7 +10,7 @@ load_dotenv()
 def main():
     print("Loading agent... (first run may be slow while the model warms up)")
     agent = build_agent()
-    print("Ready. Ask a question about the docs in sample_docs/ (Ctrl+D to quit).\n")
+    print("Ready. Ask about your files, or ask it to extract fields into a CSV (Ctrl+D to quit).\n")
 
     while True:
         try:

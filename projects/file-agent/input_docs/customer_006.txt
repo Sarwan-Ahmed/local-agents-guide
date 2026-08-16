@@ -1,0 +1,5 @@
+New customer: Carlos Mendez.
+Account number ACC-30456.
+Email: carlos.mendez@example-mail.com.
+Phone: (555) 918-4432
+DOB: 1982-09-17
