@@ -14,6 +14,8 @@ Every cloud LLM API charges per token. That's fine for production, but it makes 
 
 If you want to see the whole point of this repo working in 15 minutes before reading any theory, skip ahead to **[projects/chat-with-your-docs](projects/chat-with-your-docs/)** — a fully working local agent that answers questions about your own files, using nothing but your laptop.
 
+Have a pile of files you're manually copying data out of by hand — especially ones with sensitive/PII content you can't run through a hosted AI tool? See **[projects/batch-field-extraction](projects/batch-field-extraction/)** instead — it pulls structured fields out of many files at once, entirely locally.
+
 Then come back and work through the modules in order — each one explains a concept the flagship project already used.
 
 **Modules 02-08 below are outlines, meant as assignments** — try building each one yourself from its outline. Stuck, or want to check your work? The [`reference-solutions`](https://github.com/Sarwan-Ahmed/local-agents-guide/tree/reference-solutions) branch has a full write-up and working code for every module.
