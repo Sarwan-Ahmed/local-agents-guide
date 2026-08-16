@@ -1,0 +1,7 @@
+Customer intake form.
+Name: Marcus Webb
+Date of birth: 1985-03-22
+Account #: ACC-88213
+Email: marcus.webb@example-mail.com
+Phone: (555) 019-2231
+Notes: requested paperless statements.
