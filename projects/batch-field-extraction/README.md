@@ -34,6 +34,23 @@ Everything field-specific lives in [`schema.py`](schema.py) — the extraction p
 
 This assumes **the same fields, every file** — if different documents in your folder need different fields extracted, you'll need either separate runs per document type (with separate schemas) or a more involved classify-then-extract pipeline (combine with [module 07](../../modules/07-multi-agent-orchestration/)'s routing pattern: classify the doc type first, then dispatch to the matching schema).
 
+### Tuning it with the `schema-tuner` Claude Code agent
+
+You don't have to edit `schema.py` by hand. This project ships a custom Claude Code subagent, [`.claude/agents/schema-tuner.md`](.claude/agents/schema-tuner.md), that does it for you — the whole point being it never needs to see your real files. Its job is to take your *description* of what fields you want and what your files look like, update `schema.py` (and `extract_batch.py`'s `INPUT_GLOB` if your file extension differs), invent a few new fake sample files to test against, and verify the updated pipeline works — all without touching real data.
+
+To use it:
+
+```bash
+cd projects/batch-field-extraction
+claude
+```
+
+Launching Claude Code with this folder as your working directory is what makes the agent discoverable (Claude Code looks for `.claude/agents/` from your current directory upward). Then just describe what you need, e.g.:
+
+> Use the schema-tuner agent: my files are call center notes, I need `customer_name`, `ticket_id`, `issue_category`, and `resolved` (yes/no) extracted. Notes look roughly like: "Called about [issue], ticket #[id], resolved: [yes/no]."
+
+The agent will update the schema, generate its own fake test files, run `extract_batch.py` against them, and report back once it's verified working. **Never paste real customer data into this conversation, even to describe the format** — describe the structure in words or with obviously fake example values instead, the same way the example above does. Once you're happy with the result, point `INPUT_DIR` in your own `.env` at your real files yourself and run `python extract_batch.py` locally — that step is intentionally not part of the Claude Code conversation.
+
 ## Using this on real data
 
 A few things worth doing before pointing this at actual customer files:
