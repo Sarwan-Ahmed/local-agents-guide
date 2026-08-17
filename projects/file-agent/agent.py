@@ -51,6 +51,15 @@ def _model_name() -> str:
     return os.environ.get("LLM_MODEL", "llama3.2:3b")
 
 
+def _resolve_input_files():
+    """INPUT_GLOB may be a comma-separated list of patterns, e.g. "*.txt,*.log"."""
+    patterns = [p.strip() for p in INPUT_GLOB.split(",") if p.strip()]
+    files = set()
+    for pattern in patterns:
+        files.update(INPUT_DIR.rglob(pattern))
+    return sorted(files)
+
+
 @tool
 def read_file(filename: str) -> str:
     """Read the raw contents of one specific file by name from the input folder."""
@@ -84,7 +93,7 @@ def _build_extract_structured_tool():
             "Use null for any field not present in the text. Do not invent values that aren't there."
         )
 
-        files = sorted(INPUT_DIR.rglob(INPUT_GLOB))
+        files = _resolve_input_files()
         if not files:
             return f"No files matching {INPUT_GLOB} found in {INPUT_DIR}."
 

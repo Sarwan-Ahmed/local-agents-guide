@@ -22,9 +22,18 @@ INPUT_GLOB = os.environ.get("INPUT_GLOB", "*.txt")
 PERSIST_DIR = Path(__file__).parent / "chroma_db"
 
 
+def resolve_input_files():
+    """INPUT_GLOB may be a comma-separated list of patterns, e.g. "*.txt,*.log"."""
+    patterns = [p.strip() for p in INPUT_GLOB.split(",") if p.strip()]
+    files = set()
+    for pattern in patterns:
+        files.update(INPUT_DIR.rglob(pattern))
+    return sorted(files)
+
+
 def load_documents():
     docs = []
-    for path in sorted(INPUT_DIR.rglob(INPUT_GLOB)):
+    for path in resolve_input_files():
         docs.extend(TextLoader(str(path)).load())
     return docs
 

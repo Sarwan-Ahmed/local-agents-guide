@@ -27,14 +27,32 @@ the fly instead of reading it from a Python file.
 
 ## What's in `input_docs/`
 
-Nine short, clearly-fictional customer records in different formats (a form, call notes, terse
+Ten short, clearly-fictional customer records in different formats (a form, call notes, terse
 notes) — a stand-in for "100 real files in a specific format" without using real data. Three of
 them are deliberately missing one field, so you can check the agent reports it as empty rather
 than inventing a value. One (`archived/customer_009.txt`) is nested in a subfolder, to prove all
 three tools actually search/read/extract recursively rather than just the top-level folder —
-`INPUT_DIR.rglob(INPUT_GLOB)`, not `.glob(...)`, is what makes that work. Once it works, replace
-these with your own files (see "Using this on
-real data" below).
+`INPUT_DIR.rglob(INPUT_GLOB)`, not `.glob(...)`, is what makes that work. One (`customer_010.log`)
+is a different extension, deliberately *excluded* by the default `INPUT_GLOB` — see below. Once
+it works, replace these with your own files (see "Using this on real data" below).
+
+### Mixing file extensions
+
+`INPUT_GLOB` defaults to `*.txt`, which is why `customer_010.log` above doesn't show up in
+`ingest.py`'s file count or an `extract_structured` run until you opt in. It accepts a
+comma-separated list of patterns, so a folder with both `.txt` and `.log` files (for example)
+works by setting, in `.env` or `docker-compose.yml`'s `environment:`:
+
+```
+INPUT_GLOB=*.txt,*.log
+```
+
+Try it: re-ingest with that set and ask about Sofia Ricci (in `customer_010.log`) — she won't be
+found until `INPUT_GLOB` includes `*.log`.
+
+Every tool (`ingest.py`, `search_docs`, `extract_structured`) resolves the file list the same
+way, so you only need to set this once. `read_file` doesn't use `INPUT_GLOB` at all — it reads
+whatever filename it's given directly, any extension, as long as it's a plain text file.
 
 ## Run with Docker (recommended — no local Python or Ollama install needed)
 
