@@ -79,18 +79,6 @@ or drop `email`) — nothing needs to be edited or rebuilt for that to work.
 
 Both models are configured via `LLM_BASE_URL`/`LLM_MODEL` and `EMBED_BASE_URL`/`EMBED_MODEL` — see [docs/choosing-a-runtime.md](../../docs/choosing-a-runtime.md) to point this at LM Studio or llama.cpp instead of Ollama.
 
-### A real bug this project hit, worth knowing about
-
-`search_docs` was originally built with `create_retriever_tool`'s default formatting, which
-concatenates retrieved chunks with no indication of which file each one came from. With several
-customers' records retrieved at once, `llama3.2:3b` reliably failed lookup questions — not by
-guessing wrong, but by flatly answering "I don't have that information" even when the correct
-fact was sitting right there in the tool's result. Labeling each chunk with its source file
-(`document_prompt=PromptTemplate.from_template("Source: {source}\n{page_content}")` in
-`agent.py`) fixed it completely — every lookup question that failed before passed afterward. If
-you're adapting this for your own files and lookups seem unreliable, this is the first thing to
-check, not a prompt-wording tweak.
-
 ## Using this on real data
 
 - **Keep real files outside this git repo.** Without Docker: point `INPUT_DIR` in `.env` at an absolute path elsewhere on disk. With Docker: change the `./input_docs` line in `docker-compose.yml`'s `volumes:` to your real folder, or override it for a one-off run with `docker compose run --rm --build -v /Users/you/private/customer-files:/app/input_docs app`. `output/` is already gitignored, but don't rely on that alone.
