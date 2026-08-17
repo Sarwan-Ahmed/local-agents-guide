@@ -48,6 +48,19 @@ into the chat prompt; later runs skip straight to chatting since the index persi
 volume. `input_docs/` and `output/` mount straight from this folder, so files you extract land on
 your normal filesystem.
 
+**Switching to your own files?** The index only rebuilds when it's missing — if you change which
+folder `input_docs` points to without clearing the old index, `search_docs` keeps answering from
+whatever was ingested before. Clear just the index (not the Ollama models) before pointing
+`docker-compose.yml`'s `input_docs` mount at a new folder:
+
+```bash
+docker compose down
+docker volume rm file-agent_chroma_data
+```
+
+Then re-run `docker compose run --rm --build app` — it'll detect the empty index and re-ingest
+automatically. (Without Docker: `rm -rf chroma_db && python ingest.py`.)
+
 ## Run without Docker
 
 ```bash
