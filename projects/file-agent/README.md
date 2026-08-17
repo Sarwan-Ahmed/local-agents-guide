@@ -27,10 +27,13 @@ the fly instead of reading it from a Python file.
 
 ## What's in `input_docs/`
 
-Eight short, clearly-fictional customer records in different formats (a form, call notes, terse
+Nine short, clearly-fictional customer records in different formats (a form, call notes, terse
 notes) — a stand-in for "100 real files in a specific format" without using real data. Three of
 them are deliberately missing one field, so you can check the agent reports it as empty rather
-than inventing a value. Once it works, replace these with your own files (see "Using this on
+than inventing a value. One (`archived/customer_009.txt`) is nested in a subfolder, to prove all
+three tools actually search/read/extract recursively rather than just the top-level folder —
+`INPUT_DIR.rglob(INPUT_GLOB)`, not `.glob(...)`, is what makes that work. Once it works, replace
+these with your own files (see "Using this on
 real data" below).
 
 ## Run with Docker (recommended — no local Python or Ollama install needed)

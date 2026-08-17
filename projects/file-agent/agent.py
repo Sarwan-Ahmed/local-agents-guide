@@ -84,7 +84,7 @@ def _build_extract_structured_tool():
             "Use null for any field not present in the text. Do not invent values that aren't there."
         )
 
-        files = sorted(INPUT_DIR.glob(INPUT_GLOB))
+        files = sorted(INPUT_DIR.rglob(INPUT_GLOB))
         if not files:
             return f"No files matching {INPUT_GLOB} found in {INPUT_DIR}."
 
@@ -114,9 +114,9 @@ def _build_extract_structured_tool():
                             {"role": "user", "content": f"That didn't match the required shape ({e}). Try again."}
                         )
                         continue
-                    failures.append(path.name)
+                    failures.append(str(path.relative_to(INPUT_DIR)))
             if record is not None:
-                rows.append({"source_file": path.name, **record.model_dump()})
+                rows.append({"source_file": str(path.relative_to(INPUT_DIR)), **record.model_dump()})
 
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
         output_path = OUTPUT_DIR / output_filename

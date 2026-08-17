@@ -24,7 +24,7 @@ PERSIST_DIR = Path(__file__).parent / "chroma_db"
 
 def load_documents():
     docs = []
-    for path in sorted(INPUT_DIR.glob(INPUT_GLOB)):
+    for path in sorted(INPUT_DIR.rglob(INPUT_GLOB)):
         docs.extend(TextLoader(str(path)).load())
     return docs
 
