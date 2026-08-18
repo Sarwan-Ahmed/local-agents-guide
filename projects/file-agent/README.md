@@ -103,6 +103,30 @@ python main.py      # starts the chat loop
 Then try a second extraction with a *different* field list in the same session (e.g. add `phone`,
 or drop `email`) — nothing needs to be edited or rebuilt for that to work.
 
+### If a vague request doesn't work well on the default model
+
+The default `llama3.2:3b` is reliable when you give `extract_structured` an explicit field list
+("extract full_name and email...") — that's been tested repeatedly and works every time. It's
+noticeably less reliable when you leave the field names for the *agent* to infer from an informal
+request ("create a csv with name and email, no specific format") — in testing, it would loop
+asking which exact field names to use, or occasionally describe a tool call as text instead of
+actually making one, rather than just picking `full_name`/`email` itself and proceeding.
+
+Two ways to work around this, tested against the same request:
+- **Be explicit about field names** — the small model handles this reliably; this is the
+  "intelligence" gap, not a bug in the tool.
+- **Use a bigger model** for the vague-request case specifically: `LLM_MODEL=qwen2.5:7b` (needs
+  16GB+ RAM — see [docs/choosing-a-model.md](../../docs/choosing-a-model.md)) correctly inferred
+  `full_name`/`email` and produced a correct CSV from the exact same vague request, in one turn,
+  no back-and-forth. Set it in `.env`, or `docker-compose.yml`'s `environment:`, then
+  `ollama pull qwen2.5:7b` (natively) or `docker compose exec ollama ollama pull qwen2.5:7b`.
+
+Separately: make sure you're running a version of `main.py` that keeps conversation history
+across turns (it does, as of this fix) — an earlier version started a brand new conversation on
+every REPL input, so a follow-up like "whatever you find, no specific format" made no sense to
+the agent since it had no memory of the original request. That alone caused a lot of the
+confusing back-and-forth this section is about.
+
 ## How it maps to the code
 
 | File | Role |

@@ -37,3 +37,11 @@ ollama pull nomic-embed-text
 - **16GB+ RAM:** try 7–8B models, e.g. `llama3.1:8b` or `qwen2.5:7b` — noticeably better reasoning, still fine on CPU though slower.
 - **Discrete GPU with 8GB+ VRAM:** most runtimes (Ollama included) will use it automatically — you can comfortably run 7–13B models with much faster responses.
 - Whatever you choose, just change `LLM_MODEL` in the project's `.env` — the code doesn't need to change.
+
+A concrete, tested example of what "noticeably better reasoning" buys you: `projects/file-agent`'s
+`extract_structured` tool asks the model to invent its own field names from a vague request (no
+fixed schema — that's the point). Given "create a csv with each customer's name and email," the
+default `llama3.2:3b` would loop asking which exact field names to use instead of just picking
+some and proceeding. `qwen2.5:7b` got it right in one turn, no back-and-forth, on the exact same
+request. If you hit that kind of stuck-in-clarification loop with the 3B default, that's the
+first thing worth trying before assuming your prompt is unclear.
