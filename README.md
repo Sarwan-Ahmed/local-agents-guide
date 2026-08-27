@@ -14,9 +14,7 @@ Every cloud LLM API charges per token. That's fine for production, but it makes 
 
 If you want to see the whole point of this repo working in 15 minutes before reading any theory, skip ahead to **[projects/file-agent](projects/file-agent/)** — a local agent that answers questions about your own files *or* extracts structured data out of all of them into a CSV, deciding which per request, using nothing but your laptop. Especially useful if your files contain sensitive/PII content you can't run through a hosted AI tool.
 
-Then come back and work through the modules in order — each one explains a concept the flagship project already used.
-
-**This is the `reference-solutions` branch** — every module below has a full write-up and working code. If you want to attempt modules 02-08 yourself as exercises before seeing how they're solved, switch to `main`, which has the same structure with those modules left as outlines only.
+Then come back and work through the modules in order — each one explains a concept the flagship project already used. Every module below has a full write-up and working code.
 
 ## Learning path
 

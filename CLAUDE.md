@@ -5,19 +5,11 @@ zero-to-working guide for learning agents/LLMs/RAG/vector-DBs entirely locally (
 API calls, no per-token cost). Read the root `README.md` for the reader-facing pitch; this file
 is for continuing work on the repo itself.
 
-## Branch strategy — the one thing to never forget
+## Repo structure
 
-- **`main`** — modules 02-08 are outline stubs only (assignments for learners to attempt).
-  `projects/` and modules 00/01 are fully complete here.
-- **`reference-solutions`** — modules 02-08 have full write-ups and working code (the answer key).
-
-Everything **except** modules 02-08's own READMEs/code is meant to be identical across both
-branches. The established workflow for any change: do the work + verify on `main` first, commit,
-push, then `git checkout reference-solutions && git merge main`, resolve the expected conflicts
-in modules 06/07/08 (they intentionally diverge — main has light outline wording,
-reference-solutions has the full lesson), then push. When a fix belongs only to
-reference-solutions-only files (e.g. `modules/07-.../supervisor_demo.py`, which doesn't exist on
-main), apply it there directly after the merge.
+`main` is the only branch. Modules 00-08 all have their full write-ups and working code directly
+on it, alongside `projects/` — there's no separate outline/exercise version to worry about, just
+work on `main` like any normal single-branch repo.
 
 ## Current flagship project: `projects/file-agent`
 
@@ -30,8 +22,8 @@ One LangGraph ReAct agent, three tools, over a folder of local files (`input_doc
 
 It replaced two earlier, narrower projects (`chat-with-your-docs`: RAG-only;
 `batch-field-extraction`: fixed-schema extraction only) once the real use case turned out to need
-both, decided per-request. Modules 06/07/08 on `reference-solutions` were rewritten/repointed
-accordingly; if you ever see a reference to either deleted project name anywhere, it's stale.
+both, decided per-request. Modules 06/07/08 were rewritten/repointed accordingly; if you ever see
+a reference to either deleted project name anywhere, it's stale.
 
 `INPUT_GLOB` (env var) accepts a comma-separated list of patterns (e.g. `*.txt,*.log`) and both
 `ingest.py` and `agent.py` use `.rglob(...)` (not `.glob(...)`), so subdirectories and mixed
@@ -65,6 +57,22 @@ download if you use more than one project via Docker.
    trace), not just the prose answer. This is documented explicitly in modules 03/08 and is the
    reason `extract_structured` output was always checked by reading the CSV, never trusted from
    the agent's summary alone.
+5. **Not every Ollama model supports tool/function calling, and it fails loudly, not subtly.**
+   `ollama show <model>` lists declared capabilities; `llama3.2:3b` and `qwen2.5:3b/7b` list
+   `completion` + `tools`, but `phi3.5` lists `completion` only — passing it a `tools=[...]`
+   request 400s with `"does not support tools"`. This affects modules 03/04/07 and `file-agent`
+   (anything using function calling); `phi3.5` is still fine for JSON-mode-only work (module 02).
+   No code/prompt fix exists for this — just pick a model that declares `tools`.
+6. **A 500-line-per-file document silently defeats extraction, not slowly but instantly.**
+   Ollama's OpenAI-compatible endpoint (what `agent.py`'s raw client uses) ignores any per-request
+   attempt to raise `num_ctx` (via `extra_body` or a top-level `options` field) — it silently
+   truncates to the default ~2048-token context and ignores the rest, which for a several-hundred
+   line file means the model never sees the actual data. Confirmed by benchmarking: at default
+   context, extraction returns instantly (sub-1s) with every field `null`; only after baking a
+   larger `num_ctx` into a custom model (`ollama create mymodel -f Modelfile` with
+   `PARAMETER num_ctx 16384`) does it correctly process the full file (tens of seconds, correct
+   fields). If real input files are this long, `extract_structured`/`ingest.py` need a
+   context-widened model tag, not just a bigger/different base model.
 
 ## Environment notes for this session/machine
 
