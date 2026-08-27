@@ -10,17 +10,25 @@ This repo assumes a **CPU-only laptop with 8–16GB of RAM** — no GPU. Every d
 
 ## Recommended defaults (8–16GB RAM, CPU-only)
 
-| Model | Ollama tag | Size (4-bit) | Notes |
-|---|---|---|---|
-| **Llama 3.2 3B Instruct** (this repo's default) | `llama3.2:3b` | ~2GB | Good general instruction-following, fast on CPU |
-| Qwen2.5 3B Instruct | `qwen2.5:3b` | ~2GB | Comparable alternative, sometimes stronger at structured output |
-| Phi-3.5 mini | `phi3.5` | ~2.2GB | Microsoft's small model, strong for its size |
+| Model | Ollama tag | Size (4-bit) | Tool calling? | Notes |
+|---|---|---|---|---|
+| **Llama 3.2 3B Instruct** (this repo's default) | `llama3.2:3b` | ~2GB | Yes | Good general instruction-following, fast on CPU |
+| Qwen2.5 3B Instruct | `qwen2.5:3b` | ~2GB | Yes | Comparable alternative, sometimes stronger at structured output |
+| Phi-3.5 mini | `phi3.5` | ~2.2GB | **No** | Microsoft's small model, strong for its size — but see warning below |
 
 Pull the default with:
 
 ```bash
 ollama pull llama3.2:3b
 ```
+
+**`phi3.5` cannot do tool/function calling.** `ollama show <model>` lists each model's declared
+capabilities — `llama3.2:3b` and `qwen2.5:3b`/`qwen2.5:7b` list `completion` and `tools`, but
+`phi3.5` only lists `completion`. Point `LLM_MODEL` at it for anything that calls tools —
+module 03, module 04, module 07, or `projects/file-agent` — and you'll get an immediate
+`400 ... does not support tools` error, not a slow or subtle failure. `phi3.5` is still a fine
+choice for module 02 (plain JSON-mode structured output, no `tools` param involved). Check
+`ollama show <model>` before assuming any two "small instruct model" tags are interchangeable.
 
 ## Embedding model (used by the RAG project)
 
