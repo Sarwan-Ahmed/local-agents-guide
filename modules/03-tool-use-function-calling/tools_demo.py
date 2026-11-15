@@ -70,6 +70,7 @@ def main():
         api_key="not-needed",
     )
     model = os.environ.get("LLM_MODEL", "llama3.2:3b")
+    print(f"Using model: {model}")
 
     messages = [
         {

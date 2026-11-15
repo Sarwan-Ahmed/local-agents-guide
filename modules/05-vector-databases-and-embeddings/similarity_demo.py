@@ -14,17 +14,21 @@ load_dotenv()
 SENTENCES = [
     "The chef seared the salmon in a hot cast iron pan.",
     "Astronauts on the ISS conduct experiments in microgravity.",
+    "The recipe for dinner tonight is Daal Chawal",
     "She whisked the eggs before folding them into the batter.",
     "The rover transmitted images of the Martian surface.",
+    "I will make Pizza tonight",
     "Interest rates rose again, pushing mortgage costs higher.",
     "He grilled vegetables alongside the marinated chicken skewers.",
     "The stock market dipped after the earnings report.",
+    "I prefer Chicken Handi in dinner",
     "A new satellite was launched to study distant galaxies.",
     "The central bank signaled another rate hike next quarter.",
+    "Pasta can be the best recipe for dinner",
     "The bakery's sourdough loaf sold out within an hour.",
 ]
 
-QUERY = "What's a good recipe for dinner tonight?"
+QUERY = "What should I cook?"
 
 
 def embed(client: OpenAI, model: str, texts: list[str]) -> np.ndarray:
